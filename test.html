@@ -1,0 +1,122 @@
+<html>
+  <body>
+
+    <div id="aaa" style="position:absolute; width:100px; height:100px; border:10px #A00 solid; backgroundColor:#F44;" ></div>
+
+    <script type="text/javascript">
+    <!--
+	// ------------------------------------------------------------
+	// キーボードの入力を監視するコンストラクタ関数
+	// ------------------------------------------------------------
+	function InputKeyboard(){
+
+		// ------------------------------------------------------------
+		// プライベートな変数
+		// ------------------------------------------------------------
+		var _input_key_buffer = null;
+
+		// ------------------------------------------------------------
+		// プライベートな関数
+		// ------------------------------------------------------------
+		function KeyDownFunc (e){
+			_input_key_buffer[e.keyCode] = true;
+		}
+		function KeyUpFunc (e){
+			_input_key_buffer[e.keyCode] = false;
+		}
+		function BlurFunc (e){
+			_input_key_buffer.length = 0;
+		}
+
+		// ------------------------------------------------------------
+		// キーコードを指定して入力状態を取得する
+		// ------------------------------------------------------------
+		this.isDown = function (key_code){
+			if(_input_key_buffer[key_code])	return true;
+			return false;
+		};
+
+		// ------------------------------------------------------------
+		// 解放する
+		// ------------------------------------------------------------
+		this.release = function (){
+			if(window.removeEventListener){
+				document.removeEventListener("keydown",KeyDownFunc);
+				document.removeEventListener("keyup",KeyUpFunc);
+				window.removeEventListener("blur",BlurFunc);
+			}else if(window.detachEvent){
+				document.detachEvent("onkeydown",KeyDownFunc);
+				document.detachEvent("onkeyup",KeyUpFunc);
+				window.detachEvent("onblur",BlurFunc);
+			}
+		};
+
+		// ------------------------------------------------------------
+		// 初期化
+		// ------------------------------------------------------------
+		(function (){
+ 			_input_key_buffer = new Array();
+
+			if(window.addEventListener){
+				document.addEventListener("keydown",KeyDownFunc);
+				document.addEventListener("keyup",KeyUpFunc);
+				window.addEventListener("blur",BlurFunc);
+			}else if(window.attachEvent){
+				document.attachEvent("onkeydown",KeyDownFunc);
+				document.attachEvent("onkeyup",KeyUpFunc);
+				window.attachEvent("onblur",BlurFunc);
+			}
+		})();
+	}
+
+
+	// ------------------------------------------------------------
+	// 初期化
+	// ------------------------------------------------------------
+	// InputKeyboard オブジェクトを作成
+	var input_key = new InputKeyboard();
+
+	// id 属性が、"aaa" であるエレメントを取得
+	var element = document.getElementById("aaa");
+
+	// 座標
+	var pos_x = 0;
+	var pos_y = 0;
+
+
+	// ------------------------------------------------------------
+	// 一定の時間隔で実行
+	// ------------------------------------------------------------
+	// 60 フレームレート間隔で実行
+	setInterval(function (){
+
+		// 上キーが押された
+		if(input_key.isDown(38))	pos_y -= 10;
+
+		// 下キーが押された
+		if(input_key.isDown(40))	pos_y += 10;
+
+		// 左キーが押された
+		if(input_key.isDown(37))	pos_x -= 10;
+
+		// 右キーが押された
+		if(input_key.isDown(39))	pos_x += 10;
+
+		// エレメントの位置を更新
+		element.style.left = (pos_x) + "px";
+		element.style.top  = (pos_y) + "px";
+
+	},1000/60);
+
+
+	// ------------------------------------------------------------
+	// キーボードの入力監視を終了
+	// ------------------------------------------------------------
+	//input_key.release();
+	//input_key = null;
+
+    //-->
+    </script>
+
+  </body>
+</html>
