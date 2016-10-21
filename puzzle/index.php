@@ -61,26 +61,271 @@
       }else{
    ?>
     <!-- Latest compiled and minified CSS -->
-      <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css" />
-      <!-- Optional theme -->
-      <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap-theme.css" />
-      <script src="assets/lib/jquery-1.12.1.min.js"></script>
       <!-- Latest compiled and minified JavaScript -->
-      <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
       <!-- underscore.js -->
-      <script src="assets/lib/underscore-min.js"></script>
+      <script src="assets/lib/jquery-1.12.1.min.js"></script>
       <script src="assets/scripts/login.js"></script>
       <style>
-          .wall{
-              
+          .wall {
+              background-color: black ;
+              color: black ;
+          }
+          .road {
+              background-color: white ;
+              color : white;
+          }
+          pre {
+              padding: 6px;
+              font-size: 5px;
+              height: 800px;
+          }
+          span {
+              margin: 0;
+              padding: 5px;
+          }
+          .now {
+              background-color: red;
+              color: blue;
+          }
+          .goal {
+              background-color: yellowgreen;
+              color: red;
+          }
+          .body {
+              width : auto;
+              height: auto;
+          }
+          .box {
+              width: 100%;
+              height: 50%;
           }
       </style>
    </head>
    <body>
-       <?php
-       
-       ?>
+       <div class="box">
+       <pre id="pz"><?php
+           function generateMaze($width = 55 , $height = 55){
+               $width = floor($width / 2) * 2 + 1;
+               $height = floor($height / 2) * 2 + 1;
+               $maze = array();
+               for($y = 0 ; $y < $height ; $y++){
+                   $maze[$y] = array();
+                   for($x = 0 ; $x < $width ; $x++){
+                       $maze[$y][$x] = 0;
+                       if($x == 0 || ($x == ($width -1)) ||
+                               $y == 0 || ($y == ($height -1))){
+                           $maze[$y][$x] = 1;
+                       }
+                   }
+               }
+               $UDLR = [[0,-1],[0,1],[-1,0],[1,0]];
+               for($y = 2 ;$y < $height-2 ; $y += 2){
+                   for($x = 2 ; $x < $width-2 ; $x += 2){
+                       $maze[$y][$x] = 1;
+                       $r = $UDLR[mt_rand(0, 3)];
+                       $y2 = $y + $r[0];
+                       $x2 = $x + $r[1];
+                       $maze[$y2][$x2] = 1;
+                   }
+               }
+               $maze[1][1] = 0;
+               $maze[53][53] = 0;
+               return $maze;
+           }
+           
+           function drawMaze($maze){
+               $pat = array();
+               $pat[0] = "<span class='road'>0</span>";
+               $pat[1] = "<span class='wall'>1</span>";
+               $html = "";
+               for($y = 0 ; $y < count($maze) ; $y++){
+                   for($x = 0 ; $x < count($maze) ; $x++){
+                       $html .= $pat[$maze[$y][$x]];
+                   }
+                   $html .= "\n";
+               }
+               return $html;
+           }
+           $maze = generateMaze(55 ,55);
+           echo drawMaze($maze);
+           ?>
+       </pre>
+       </div>
    </body>
+   
+   <script type="text/javascript">
+       $("#pz").find("span:eq(56)").html("P").addClass("now");
+       $("#pz").find("span:eq(2968)").html("G").addClass("goal");
+       //$("#pz").find("span:eq(111)").html("G").addClass("goal");
+	// ------------------------------------------------------------
+	// キーボードの入力を監視するコンストラクタ関数
+	// ------------------------------------------------------------
+	function InputKeyboard(){
+
+		// ------------------------------------------------------------
+		// プライベートな変数
+		// ------------------------------------------------------------
+		var _input_key_buffer = null;
+
+		// ------------------------------------------------------------
+		// プライベートな関数
+		// ------------------------------------------------------------
+		function KeyDownFunc (e){
+			_input_key_buffer[e.keyCode] = true;
+		}
+		function KeyUpFunc (e){
+			_input_key_buffer[e.keyCode] = false;
+		}
+		function BlurFunc (e){
+			_input_key_buffer.length = 0;
+		}
+
+		// ------------------------------------------------------------
+		// キーコードを指定して入力状態を取得する
+		// ------------------------------------------------------------
+		this.isDown = function (key_code){
+			if(_input_key_buffer[key_code])	return true;
+			return false;
+		};
+
+		// ------------------------------------------------------------
+		// 解放する
+		// ------------------------------------------------------------
+		this.release = function (){
+			if(window.removeEventListener){
+				document.removeEventListener("keydown",KeyDownFunc);
+				document.removeEventListener("keyup",KeyUpFunc);
+				window.removeEventListener("blur",BlurFunc);
+			}else if(window.detachEvent){
+				document.detachEvent("onkeydown",KeyDownFunc);
+				document.detachEvent("onkeyup",KeyUpFunc);
+				window.detachEvent("onblur",BlurFunc);
+			}
+		};
+
+		// ------------------------------------------------------------
+		// 初期化
+		// ------------------------------------------------------------
+		(function (){
+ 			_input_key_buffer = new Array();
+
+			if(window.addEventListener){
+				document.addEventListener("keydown",KeyDownFunc);
+				document.addEventListener("keyup",KeyUpFunc);
+				window.addEventListener("blur",BlurFunc);
+			}else if(window.attachEvent){
+				document.attachEvent("onkeydown",KeyDownFunc);
+				document.attachEvent("onkeyup",KeyUpFunc);
+				window.attachEvent("onblur",BlurFunc);
+			}
+		})();
+	}
+        
+        function hasClass(element, className) {
+            console.log((' ' + element.className + ' ').replace(/[\n\t]/g, ' ').indexOf(' ' + className + ' '));
+            return (' ' + element.className + ' ').replace(/[\n\t]/g, ' ').indexOf(' ' + className + ' ') !== -1;
+        }
+
+
+	// ------------------------------------------------------------
+	// 初期化
+	// ------------------------------------------------------------
+	// InputKeyboard オブジェクトを作成
+	var input_key = new InputKeyboard();
+
+	// id 属性が、"aaa" であるエレメントを取得
+	var element = document.getElementsByClassName("now");
+        var span = document.getElementsByTagName("span");
+        var index;
+        for(var i = 0 ; i < span.length ; i++){
+            if(span[i].innerHTML == "P"){
+                index = i;
+            }
+        }
+
+	// 座標
+	//var pos_x = 0;
+	//var pos_y = 0;
+
+
+	// ------------------------------------------------------------
+	// 一定の時間隔で実行
+	// ------------------------------------------------------------
+	// 60 フレームレート間隔で実行
+	setInterval(function (){
+
+		// 上キーが押された
+		if(input_key.isDown(38)){
+                    var id = index - 55;
+                    //console.log(span[id].className == "road");
+                    if(span[id].className != "wall"){
+                        console.log("unnko");
+                        span[index].className = "road";
+                        span[index].innerHTML = "0";
+                        span[id].innerHTML = "P";
+                        span[id].classList.add("now");
+                        index -= 55;
+                    }
+                }
+
+		// 下キーが押された
+		if(input_key.isDown(40)){
+                    var id = index + 55;
+                    //console.log(span[id].className == "road");
+                    if(span[id].className != "wall"){
+                        console.log("unnko");
+                        span[index].className = "road";
+                        span[index].innerHTML = "0";
+                        span[id].innerHTML = "P";
+                        span[id].classList.add("now");
+                        index += 55;
+                    }
+                }
+
+		// 左キーが押された
+		if(input_key.isDown(37)){
+                   var id = index - 1;
+                    //console.log(span[id].className == "road");
+                    if(span[id].className != "wall"){
+                        console.log("unnko");
+                        span[index].className = "road";
+                        span[index].innerHTML = "0";
+                        span[id].innerHTML = "P";
+                        span[id].classList.add("now");
+                        index -= 1;
+                    } 
+                }
+
+		// 右キーが押された
+		if(input_key.isDown(39)){
+                    var id = index + 1;
+                    //console.log(span[id].className == "road");
+                    if(span[id].className != "wall"){
+                        console.log("unnko");
+                        span[index].className = "road";
+                        span[index].innerHTML = "0";
+                        span[id].innerHTML = "P";
+                        span[id].classList.add("now");
+                        index += 1;
+                    }
+                }
+
+		// エレメントの位置を更新
+		//element.style.left = (pos_x) + "px";
+		//element.style.top  = (pos_y) + "px";
+
+	},1000/10);
+
+
+	// ------------------------------------------------------------
+	// キーボードの入力監視を終了
+	// ------------------------------------------------------------
+	//input_key.release();
+	//input_key = null;
+
+    </script>
+
+   
 </html>
 <?php
       }
