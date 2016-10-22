@@ -256,7 +256,10 @@
         
         //0~3の乱数生成
         var rand;
-        console.log(rand_index);
+        //前回値の保持用
+        var previous = 0;
+        //カウント
+        var count = 0;
         
 	// ------------------------------------------------------------
 	// 一定の時間隔で実行
@@ -269,7 +272,6 @@
                     var id = index - 55;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
-                        console.log("unnko");
                         span[index].className = "road";
                         span[index].innerHTML = "0";
                         span[id].innerHTML = "P";
@@ -283,7 +285,6 @@
                     var id = index + 55;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
-                        console.log("unnko");
                         span[index].className = "road";
                         span[index].innerHTML = "0";
                         span[id].innerHTML = "P";
@@ -297,7 +298,6 @@
                    var id = index - 1;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
-                        console.log("unnko");
                         span[index].className = "road";
                         span[index].innerHTML = "0";
                         span[id].innerHTML = "P";
@@ -311,7 +311,6 @@
                     var id = index + 1;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
-                        console.log("unnko");
                         span[index].className = "road";
                         span[index].innerHTML = "0";
                         span[id].innerHTML = "P";
@@ -330,62 +329,98 @@
         setInterval(function(){
             //0~3の乱数生成
             rand = Math.floor(Math.random() * 4);
-            console.log(rand);
             switch(rand){
                 //上
                 case 0:
                 {
                     var id = rand_index - 55;
-                    if(span[id].className != "wall"){
+                    if(span[id].className != "wall" && previous != 1){
                         span[rand_index].className = "road";
                         span[rand_index].innerHTML = "0";
                         span[id].innerHTML = "G";
                         span[id].classList.add("goal");
-                        rand_index -= 55;
+                        rand_index -= 55;                      
+                        previous = 0;
                         break;
                     }
+                    if(previous == 0){
+                            count++;
+                            if(count > 2){
+                                previous = 1;
+                                count = 0;
+                                break;
+                            }
+                        }
                 }
                 //下
                 case 1:
                 {
                     var id = rand_index + 55;
-                    if(span[id].className != "wall"){
+                    if(span[id].className != "wall" && previous != 0){
                         span[rand_index].className = "road";
                         span[rand_index].innerHTML = "0";
                         span[id].innerHTML = "G";
                         span[id].classList.add("goal");
-                        rand_index += 55;
+                        rand_index += 55;                       
+                        previous = 1;
                         break;
                     }
+                    if(previous == 1){
+                            count++;
+                            if(count > 2){
+                                previous = 0;
+                                count = 0;
+                                break;
+                            }
+                        }
+                    //break;
                 }
                 //右
                 case 2:
                 {
                     var id = rand_index + 1;
-                    if(span[id].className != "wall"){
+                    if(span[id].className != "wall" && previous != 3){
                         span[rand_index].className = "road";
                         span[rand_index].innerHTML = "0";
                         span[id].innerHTML = "G";
                         span[id].classList.add("goal");
                         rand_index += 1;
+                        previous = 2;
                         break;
                     }
+                    if(previous == 2){
+                            count++;
+                            if(count > 2){
+                                previous = 3;
+                                count = 0;
+                                break;
+                            }
+                        }
                 }
                 //左
                 case 3:
                 {
                     var id = rand_index - 1;
-                    if(span[id].className != "wall"){
+                    if(span[id].className != "wall" && previous != 2){
                         span[rand_index].className = "road";
                         span[rand_index].innerHTML = "0";
                         span[id].innerHTML = "G";
                         span[id].classList.add("goal");
                         rand_index -= 1;
+                        previous = 3;
                         break;
+                    }
+                    if(previous == 3){
+                        count++;
+                        if(count > 2){
+                            previous = 2;
+                            count = 0;
+                            break;
+                        }
                     }
                 }
             }
-        },100);
+        },70);
         
         
 	// ------------------------------------------------------------
