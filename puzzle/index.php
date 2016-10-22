@@ -156,7 +156,7 @@
    <script type="text/javascript">
        $("#pz").find("span:eq(56)").html("P").addClass("now");
        $("#pz").find("span:eq(2968)").html("G").addClass("goal");
-       //$("#pz").find("span:eq(111)").html("G").addClass("goal");
+       //$("#pz").find("span:eq(2968)").html("G").addClass("goal");
 	// ------------------------------------------------------------
 	// キーボードの入力を監視するコンストラクタ関数
 	// ------------------------------------------------------------
@@ -236,26 +236,36 @@
 	// id 属性が、"aaa" であるエレメントを取得
 	var element = document.getElementsByClassName("now");
         var span = document.getElementsByTagName("span");
-        var index;
+        var index,rand_index;
         for(var i = 0 ; i < span.length ; i++){
             if(span[i].innerHTML == "P"){
                 index = i;
+                break;
+            }
+        }
+        for(var i = 0 ; i < span.length ; i++){
+            if(span[i].innerHTML == "G"){
+                rand_index = i;
+                break;
             }
         }
 
 	// 座標
 	//var pos_x = 0;
 	//var pos_y = 0;
-
-
+        
+        //0~3の乱数生成
+        var rand;
+        console.log(rand_index);
+        
 	// ------------------------------------------------------------
 	// 一定の時間隔で実行
 	// ------------------------------------------------------------
 	// 60 フレームレート間隔で実行
 	setInterval(function (){
 
-		// 上キーが押された
-		if(input_key.isDown(38)){
+		// 上キー38が押された(Uキー85)
+		if(input_key.isDown(85)){
                     var id = index - 55;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -268,8 +278,8 @@
                     }
                 }
 
-		// 下キーが押された
-		if(input_key.isDown(40)){
+		// 下キー40が押された(Jキー86)
+		if(input_key.isDown(86)){
                     var id = index + 55;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -282,8 +292,8 @@
                     }
                 }
 
-		// 左キーが押された
-		if(input_key.isDown(37)){
+		// 左キー37が押された(Gキー71)
+		if(input_key.isDown(71)){
                    var id = index - 1;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -296,8 +306,8 @@
                     } 
                 }
 
-		// 右キーが押された
-		if(input_key.isDown(39)){
+		// 右キー39が押された(Hキー72)
+		if(input_key.isDown(72)){
                     var id = index + 1;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -314,9 +324,70 @@
 		//element.style.left = (pos_x) + "px";
 		//element.style.top  = (pos_y) + "px";
 
-	},1000/10);
-
-
+	},1000/12);
+        
+        
+        setInterval(function(){
+            //0~3の乱数生成
+            rand = Math.floor(Math.random() * 4);
+            console.log(rand);
+            switch(rand){
+                //上
+                case 0:
+                {
+                    var id = rand_index - 55;
+                    if(span[id].className != "wall"){
+                        span[rand_index].className = "road";
+                        span[rand_index].innerHTML = "0";
+                        span[id].innerHTML = "G";
+                        span[id].classList.add("goal");
+                        rand_index -= 55;
+                        break;
+                    }
+                }
+                //下
+                case 1:
+                {
+                    var id = rand_index + 55;
+                    if(span[id].className != "wall"){
+                        span[rand_index].className = "road";
+                        span[rand_index].innerHTML = "0";
+                        span[id].innerHTML = "G";
+                        span[id].classList.add("goal");
+                        rand_index += 55;
+                        break;
+                    }
+                }
+                //右
+                case 2:
+                {
+                    var id = rand_index + 1;
+                    if(span[id].className != "wall"){
+                        span[rand_index].className = "road";
+                        span[rand_index].innerHTML = "0";
+                        span[id].innerHTML = "G";
+                        span[id].classList.add("goal");
+                        rand_index += 1;
+                        break;
+                    }
+                }
+                //左
+                case 3:
+                {
+                    var id = rand_index - 1;
+                    if(span[id].className != "wall"){
+                        span[rand_index].className = "road";
+                        span[rand_index].innerHTML = "0";
+                        span[id].innerHTML = "G";
+                        span[id].classList.add("goal");
+                        rand_index -= 1;
+                        break;
+                    }
+                }
+            }
+        },100);
+        
+        
 	// ------------------------------------------------------------
 	// キーボードの入力監視を終了
 	// ------------------------------------------------------------

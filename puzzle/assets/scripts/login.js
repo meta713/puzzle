@@ -4,8 +4,8 @@ $(function(){
   //$(".wall").on("click",test);
   //console.log($("pre").find("span"));
   //test();
-  $("#pz").find("span:eq(56)").html("P").addClass("now");
-  $("#pz").find("span:eq(2968)").html("G").addClass("goal");
+  //$("#pz").find("span:eq(56)").html("P").addClass("now");
+  //$("#pz").find("span:eq(2968)").html("G").addClass("goal");
 });
 
 function show(){
