@@ -268,7 +268,7 @@
 	setInterval(function (){
 
 		// 上キー38が押された(Uキー85)
-		if(input_key.isDown(85)){
+		if(input_key.isDown(38)){
                     var id = index - 55;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -281,7 +281,7 @@
                 }
 
 		// 下キー40が押された(Jキー86)
-		if(input_key.isDown(86)){
+		if(input_key.isDown(40)){
                     var id = index + 55;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -294,7 +294,7 @@
                 }
 
 		// 左キー37が押された(Gキー71)
-		if(input_key.isDown(71)){
+		if(input_key.isDown(37)){
                    var id = index - 1;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -307,7 +307,7 @@
                 }
 
 		// 右キー39が押された(Hキー72)
-		if(input_key.isDown(72)){
+		if(input_key.isDown(39)){
                     var id = index + 1;
                     //console.log(span[id].className == "road");
                     if(span[id].className != "wall"){
@@ -367,7 +367,7 @@
                     }
                     if(previous == 1){
                             count++;
-                            if(count > 2){
+                            if(count > 1){
                                 previous = 0;
                                 count = 0;
                                 break;
@@ -390,7 +390,7 @@
                     }
                     if(previous == 2){
                             count++;
-                            if(count > 2){
+                            if(count > 1){
                                 previous = 3;
                                 count = 0;
                                 break;
@@ -415,12 +415,12 @@
                         if(count > 2){
                             previous = 2;
                             count = 0;
-                            break;
+                            break
                         }
                     }
                 }
             }
-        },70);
+        },50);
         
         
 	// ------------------------------------------------------------
